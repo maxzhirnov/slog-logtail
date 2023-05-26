@@ -7,17 +7,17 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type Loger interface {
+type TgLoger interface {
 	Log(logLevel LogLevel, msgName string, body ...any)
 }
 
-type TgLoger struct {
+type tgLoger struct {
 	Token  string
 	ChatID int64
 	Logger *Logger
 }
 
-func (l TgLoger) Log(logLevel LogLevel, msgName string, body ...any) {
+func (l tgLoger) Log(logLevel LogLevel, msgName string, body ...any) {
 	go func() { l.Logger.Log(logLevel, msgName, body...) }()
 	bot, err := tgbotapi.NewBotAPI(l.Token)
 	if err != nil {
