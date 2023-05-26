@@ -59,7 +59,7 @@ func (l *Logger) SetDefault() {
 	slog.SetDefault(l.Logger)
 }
 
-func (l *Logger) Log(logLevel LogLevel, msg string, args ...any) {
+func (l *Logger) Log(logLevel LogLevel, msg string, args ...any) string {
 
 	switch logLevel {
 	case INFO:
@@ -73,10 +73,13 @@ func (l *Logger) Log(logLevel LogLevel, msg string, args ...any) {
 	}
 
 	code, err := l.logtail.Send(l.buf.String())
-	l.buf.Reset()
+
+	defer l.buf.Reset()
 
 	fmt.Println(code, err)
 	if err != nil {
-		return
+		return ""
 	}
+
+	return l.buf.String()
 }

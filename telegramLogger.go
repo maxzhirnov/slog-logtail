@@ -1,6 +1,7 @@
 package logtail
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -26,15 +27,20 @@ func NewTelegramLoger(token string, chatID int64, logger *Logger) TelegramLogger
 }
 
 func (tlo TelegramLogerObject) Log(logLevel LogLevel, msgName string, body ...any) {
-	tlo.Logger.Log(logLevel, msgName, body...)
+	msgText := tlo.Logger.Log(logLevel, msgName, body...)
+	var data interface{}
+	json.Unmarshal([]byte(msgText), &data)
+	formattedMsg := formatMessage(data, 0)
+	fmt.Println(formattedMsg)
+
 	bot, err := tgbotapi.NewBotAPI(tlo.Token)
 	if err != nil {
 		log.Println(err)
 	}
 	bot.Debug = false
 
-	msg := tgbotapi.NewMessage(tlo.ChatID, fmt.Sprintf("[[%s]]\n%s\n%s", logLevel, msgName, body))
-	msg.ParseMode = "Markdown"
+	msg := tgbotapi.NewMessage(tlo.ChatID, formattedMsg)
+	// msg.ParseMode = "Markdown"
 	if _, err := bot.Send(msg); err != nil {
 		log.Println(err)
 	}
