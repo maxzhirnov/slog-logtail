@@ -14,7 +14,7 @@ appInfoLogs := slog.Group(
 	//Telegream logger
 	var tgLogger tglog.Loger = tglog.TgLoger{
 		Token:  tgLoggerSecret,
-		ChatID: -904548422,
+		ChatID: TELEGRAM_CHAT_ID,
 		Logger: &loger,
 	}
 	tgLogger.Log(logtail.INFO, "Starting...")
