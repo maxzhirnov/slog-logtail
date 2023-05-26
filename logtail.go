@@ -5,14 +5,11 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
-	"golang.org/x/exp/slog"
 )
 
 type Logtail struct {
-	url    *url.URL
-	token  string
-	logger slog.Logger
+	url   *url.URL
+	token string
 }
 
 var (
@@ -44,9 +41,8 @@ func (l *Logtail) Send(body string) (int, error) {
 	}
 	defer response.Body.Close()
 
-	// Check response status
 	if response.StatusCode != 202 {
-		return 0, fmt.Errorf("log send: %s", response.Status)
+		return response.StatusCode, fmt.Errorf("Error sending log: %w", err)
 	}
 	return response.StatusCode, nil
 }
