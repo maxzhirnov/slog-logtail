@@ -1,6 +1,7 @@
 # slog-logtail
 
 Usage Example:
+
 ```
 	appInfoLogs := slog.Group(
 		"app_info",
